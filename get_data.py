@@ -3,6 +3,8 @@ import chromedriver_binary  # Adds chromedriver binary to path
 import time
 import datetime
 from datetime import date
+import requests 
+
 
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
@@ -15,7 +17,9 @@ def get_timestamp():
 
     return timestamp_now
 
-def get_date(type):
+
+
+def get_info_all_propositions(type):
     driver = webdriver.Chrome(chrome_options=options)
     driver.get(f'''https://www.camara.leg.br/busca-portal?contextoBusca=BuscaProposicoes&pagina=1&order=data&abaEspecifica=true&filtros=%5B%7B"ano"%3A"2021"%7D%5D&tipos={type}''')
 
@@ -25,26 +29,48 @@ def get_date(type):
 
     all_link = []
     for a in all_propositions:
-        all_link = driver.find_element_by_link_text(a.text)
-        print(all_link.get_attribute("href"))
+        link = driver.find_element_by_link_text(a.text)
+        all_link.append(link.get_attribute("href"))
 
     driver.close()
     return [all_dates,all_propositions,all_link]
 
+def get_pdf_proposition(link_proposition):
+    driver = webdriver.Chrome(chrome_options=options)
+    
+    for proposition in link_proposition:
+        print(proposition)
+        driver.get(f'''{proposition}''')
 
-def open(type):
+        # intero_teor_text = driver.find_elements_by_xpath("//span[@class='naoVisivelNaImpressao']")
+
+        it_link = driver.find_element_by_link_text("Inteiro teor")
+        link = it_link.get_attribute("href")
+        print(link)
+        download_pdf(link)
+        time.sleep(5)
+
+
+def download_pdf(url): 
+    r = requests.get(url, stream=True)
+    with open('metadata.pdf', 'wb') as fd: 
+        for chunk in r.iter_content(2000): 
+            fd.write(chunk)
+
+
+
+def run(type):
     time_now = get_timestamp()
-    datas_type = get_date(type)
+    datas_type = get_info_all_propositions(type)
     print(f"{time_now}\n\n")
     print(f"{datas_type}\n\n")
-    
-    '''for p in datas_type[1]:
-        print(p.find_element_by_link_text("value"))'''
 
+    get_pdf_proposition(datas_type[2])
+    
     
 
 if __name__ == '__main__':
     # PUT TYPE PROPOSITION -> ['PL','PEC','PLP']
-    open('PL')
+    run('PL')
 
 

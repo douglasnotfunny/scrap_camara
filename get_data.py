@@ -1,5 +1,5 @@
 from selenium import webdriver
-import chromedriver_binary  # Adds chromedriver binary to path
+import chromedriver_binary 
 import time
 import datetime
 import requests 
@@ -74,8 +74,6 @@ def get_pdf_proposition(link_proposition):
 
     for proposition in link_proposition:
         driver.get(f'''{proposition}''')
-
-        # intero_teor_text = driver.find_elements_by_xpath("//span[@class='naoVisivelNaImpressao']")
 
         it_link = driver.find_element_by_link_text("Inteiro teor")
         link = it_link.get_attribute("href")

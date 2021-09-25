@@ -39,8 +39,10 @@ def get_info_all_propositions(type):
         url = f'''https://www.camara.leg.br/busca-portal?contextoBusca=BuscaProposicoes&pagina={num_page}&order=data&abaEspecifica=true&filtros=%5B%7B"ano"%3A"2021"%7D%5D&tipos={type}'''
         driver.get(url)
 
+        # get all dates
         all_dates = driver.find_elements_by_xpath("//p[@class='busca-resultados__info']")
 
+        # get only dates and verify if 4 days ago or more
         for date in all_dates:
             d = (date.text.split('\n')[1].split(" ")[0])
             timestamp = get_timestamp(d)
@@ -51,9 +53,10 @@ def get_info_all_propositions(type):
                 condition = 1
                 break
 
-        # get 
+        # get all proposition
         all_propositions = driver.find_elements_by_xpath("//h6//a")
 
+        # get link proposition
         for a in all_propositions:
             link = driver.find_element_by_link_text(a.text)
             all_link.append(link.get_attribute("href"))

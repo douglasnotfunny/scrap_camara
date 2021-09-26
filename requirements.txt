@@ -1,0 +1,12 @@
+backports.entry-points-selectable==1.1.0
+certifi==2021.5.30
+charset-normalizer==2.0.6
+chromedriver-binary==94.0.4606.41.0
+distlib==0.3.3
+filelock==3.0.12
+idna==3.2
+platformdirs==2.3.0
+PyPDF2==1.26.0
+requests==2.26.0
+selenium==3.141.0
+six==1.16.0
